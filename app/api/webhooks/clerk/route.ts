@@ -62,8 +62,8 @@ export async function POST(req: Request) {
     }
   }
 
-  // console.log(`Webhook with an ID of ${evt.data.id} and type of ${eventType}`);
-  // console.log("Webhook body:", body);
+   console.log(`Webhook with an ID of ${evt.data.id} and type of ${eventType}`);
+   console.log("Webhook body:", body);
 
   return NextResponse.json(
     { message: "Webhook processed successfully" },

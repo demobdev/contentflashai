@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="public/thumbnail.jpg" alt="ThreadCraft AI Logo" />
+  <img src="public/thumbnail.jpg" alt="Content Flash AI Logo" />
 </p>
 
-# ThreadCraft AI: Social Media Content Generator
+# Content Flash AI: Social Media Content Generator
 
-ThreadCraft AI is a powerful Next.js application that leverages AI to generate engaging content for various social media platforms. This project uses cutting-edge technologies to provide users with an intuitive interface for creating Twitter threads, Instagram captions, and LinkedIn posts.
+Content Flash AI is a powerful Next.js application that leverages AI to generate engaging content for various social media platforms. This project uses cutting-edge technologies to provide users with an intuitive interface for creating Twitter threads, Instagram captions, and LinkedIn posts.
 
 ## Features
 
@@ -33,8 +33,8 @@ ThreadCraft AI is a powerful Next.js application that leverages AI to generate e
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/threadcraft-ai.git
-   cd threadcraft-ai
+   git clone https://github.com/your-username/content-flash-ai.git
+   cd content-flash-ai
    ```
 
 2. Install dependencies:

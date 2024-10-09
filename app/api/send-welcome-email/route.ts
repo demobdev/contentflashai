@@ -16,15 +16,15 @@ export async function POST(req: Request) {
       );
     }
 
-    const sender = { name: "ThreadCraft AI", email: "hello@demomailtrap.com" };
+    const sender = { name: "Content Flash AI", email: "hello@demomailtrap.com" };
     const recipients = [{ email }];
 
     await client.send({
       from: sender,
       to: recipients,
-      subject: "Welcome to ThreadCraft AI!",
+      subject: "Welcome to Content Flash AI!",
       html: `
-        <h1>Welcome to ThreadCraft AI, ${name}!</h1>
+        <h1>Welcome to Content Flash AI, ${name}!</h1>
         <p>We're excited to have you on board. Get started by...</p>
       `,
       category: "Welcome Email",
