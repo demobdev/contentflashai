@@ -79,7 +79,7 @@ export default function GenerateContent() {
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.push("/");
+      router.push("/generate");
     } else if (isSignedIn && user) {
       console.log("User loaded:", user);
       fetchUserPoints();
