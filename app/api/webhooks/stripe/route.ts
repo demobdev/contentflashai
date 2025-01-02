@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { headers } from "next/headers";
-import {
-  createOrUpdateSubscription,
-  updateUserPoints,
-} from "@/utils/db/actions";
+import { createOrUpdateSubscription, updateUserPoints } from "@/utils/db/actions";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
@@ -35,8 +32,6 @@ export async function POST(req: Request) {
     );
   }
 
-  console.log(`Received event type: ${event.type}`);
-
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const userId = session.client_reference_id;
@@ -51,64 +46,30 @@ export async function POST(req: Request) {
     }
 
     try {
-      console.log(`Retrieving subscription: ${subscriptionId}`);
       const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-      console.log("Retrieved subscription:", subscription);
 
-      if (!subscription.items.data.length) {
-        console.error("No items found in subscription", { subscription });
-        return NextResponse.json(
-          { error: "Invalid subscription data" },
-          { status: 400 }
-        );
+      // Determine the number of points based on the plan
+      let pointsToAdd = 0;
+      if (subscription.plan.nickname === "Basic") {
+        pointsToAdd = 100;
+      } else if (subscription.plan.nickname === "Pro") {
+        pointsToAdd = 500;
       }
 
-      const priceId = subscription.items.data[0].price.id;
-      console.log(`Price ID: ${priceId}`);
-
-      let plan: string;
-      let pointsToAdd: number;
-
-      // Map price IDs to plan names and points
-      switch (priceId) {
-        case "price_1Q83EwDIZtNhBePNbLqTeqZd":
-          plan = "Basic";
-          pointsToAdd = 100;
-          break;
-        case "price_1Q83GCDIZtNhBePN4qGJz7nK":
-          plan = "Pro";
-          pointsToAdd = 500;
-          break;
-        default:
-          console.error("Unknown price ID", { priceId });
-          return NextResponse.json(
-            { error: "Unknown price ID" },
-            { status: 400 }
-          );
-      }
-
-      console.log(`Creating/updating subscription for user ${userId}`);
-      const updatedSubscription = await createOrUpdateSubscription(
+      // Update subscription in database
+      await createOrUpdateSubscription(
         userId,
         subscriptionId,
-        plan,
+        subscription.plan.nickname || "Unknown",
         "active",
         new Date(subscription.current_period_start * 1000),
         new Date(subscription.current_period_end * 1000)
       );
 
-      if (!updatedSubscription) {
-        console.error("Failed to create or update subscription");
-        return NextResponse.json(
-          { error: "Failed to create or update subscription" },
-          { status: 500 }
-        );
-      }
-
-      console.log(`Updating points for user ${userId}: +${pointsToAdd}`);
+      // Add points to user's account
       await updateUserPoints(userId, pointsToAdd);
 
-      console.log(`Successfully processed subscription for user ${userId}`);
+      console.log(`Successfully processed subscription and added ${pointsToAdd} points for user ${userId}`);
     } catch (error: any) {
       console.error("Error processing subscription:", error);
       return NextResponse.json(

@@ -27,10 +27,10 @@ export function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-gray-900/80 backdrop-blur-md" : "bg-transparent"
+        isScrolled ? "bg-gray-900/90 backdrop-blur-md" : "bg-transparent"
       }`}
     >
-      <nav className="container mx-auto px-4 sm:px-8 py-4 sm:py-6">
+      <nav className="container mx-auto px-4 sm:px-8 py-3 sm:py-4">
         <div className="flex flex-wrap justify-between items-center max-w-6xl mx-auto">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
@@ -56,7 +56,7 @@ export function Navbar() {
             } sm:block mt-4 sm:mt-0`}
           >
             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-8">
-              {["Features", "Pricing", "Docs"].map((item) => (
+              {["Features", "Pricing", "Docs", "Calendar"].map((item) => (
                 <Link
                   key={item}
                   href={`/${item.toLowerCase()}`}

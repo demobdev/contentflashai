@@ -9,8 +9,7 @@ export async function updateUserPoints(userId: string, points: number) {
       .update(Users)
       .set({ points: sql`${Users.points} + ${points}` })
       .where(eq(Users.stripeCustomerId, userId))
-      .returning()
-      .execute();
+      .returning();
     return updatedUser;
   } catch (error) {
     console.error("Error updating user points:", error);

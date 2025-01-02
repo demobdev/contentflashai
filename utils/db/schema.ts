@@ -42,3 +42,12 @@ export const GeneratedContent = pgTable("generated_content", {
   contentType: varchar("content_type", { length: 50 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+// Add fields for content generation history
+export const ContentHistory = pgTable("content_history", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => Users.id).notNull(),
+  content: text("content").notNull(),
+  date: timestamp("date").defaultNow(),
+  pointsUsed: integer("points_used").notNull(),
+});
