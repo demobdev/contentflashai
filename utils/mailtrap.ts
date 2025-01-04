@@ -19,14 +19,14 @@ export const sendWelcomeEmail = async (toEmail: string, name: string) => {
     await initMailtrap();
   }
 
-  const sender = { name: "Content Flash AI", email: "hello@demomailtrap.com" };
+  const sender = { name: "Content Flash", email: "hello@demomailtrap.com" };
 
   await client.send({
     from: sender,
     to: [{ email: toEmail }],
-    subject: "Welcome to Content Flash AI!",
+    subject: "Welcome to Content Flash!",
     html: `
-      <h1>Welcome to Content Flash AI, ${name}!</h1>
+      <h1>Welcome to Content Flash, ${name}!</h1>
       <p>We're excited to have you on board. Get started by...</p>
     `,
   });
