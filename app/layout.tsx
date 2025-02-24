@@ -3,6 +3,7 @@ import { dark } from "@clerk/themes";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Footer } from "@/components/Footer"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
         <body className={`${inter.className} bg-black text-white antialiased`}>
           <ThemeProvider attribute="class" defaultTheme="dark">
             {children}
+            <Footer />
           </ThemeProvider>
         </body>
       </html>
