@@ -7,7 +7,7 @@ import { Users } from "@/utils/db/schema";
 import { eq } from "drizzle-orm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-02-24",
+  apiVersion: "2024-06-20",
 });
 
 const endpointSecret = "whsec_AhFY8hrwwOnaMnL6hq4gRoaQJ4eGUZKC";
@@ -39,13 +39,13 @@ export async function POST(req: Request) {
         }
 
         try {
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId) as Stripe.Subscription;
 
           // Determine the number of points based on the plan
           let pointsToAdd = 0;
-          if (subscription.plan.nickname === "Basic") {
+          if (subscription.items.data[0].price.nickname === "Basic") {
             pointsToAdd = 100;
-          } else if (subscription.plan.nickname === "Pro") {
+          } else if (subscription.items.data[0].price.nickname === "Pro") {
             pointsToAdd = 500;
           }
 
@@ -53,8 +53,8 @@ export async function POST(req: Request) {
           await createOrUpdateSubscription(
             userId,
             subscriptionId,
-            subscription.plan.nickname || "Unknown",
-            "active",
+            subscription.items.data[0].price.nickname || "Unknown",
+            subscription.status,
             new Date(subscription.current_period_start * 1000),
             new Date(subscription.current_period_end * 1000)
           );
