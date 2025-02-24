@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { CheckIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -20,7 +20,7 @@ const pricingPlans = [
   {
     name: "Pro",
     price: "29",
-    priceId: "rice_1QdM0mDIZtNhBePNi15kVpc3",
+    priceId: "price_1QdM0mDIZtNhBePNi15kVpc3",
     features: [
       "500 AI-generated posts per month",
       "Twitter, Instagram, and LinkedIn content",
@@ -41,17 +41,16 @@ const pricingPlans = [
   },
 ];
 
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
 export default function PricingPage() {
-  const { isSignedIn, user } = useUser();
+  const { userId } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubscribe = async (priceId: string) => {
-    if (!isSignedIn) {
-      return;
-    }
-
-    setIsLoading(true);
     try {
+      setIsLoading(true);
+      
       const response = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: {
@@ -59,24 +58,20 @@ export default function PricingPage() {
         },
         body: JSON.stringify({
           priceId,
-          userId: user?.id,
         }),
       });
+
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to create checkout session");
+        throw new Error(data.error || "Failed to create checkout session");
       }
 
-      const { sessionId } = await response.json();
-      const stripe = await loadStripe(
-        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-      );
-      if (!stripe) {
-        throw new Error("Failed to load Stripe");
-      }
-      await stripe.redirectToCheckout({ sessionId });
+      // Redirect to Stripe Checkout
+      window.location.href = data.url;
     } catch (error) {
-      console.error("Error creating checkout session:", error);
+      console.error("Error:", error);
+      alert("Failed to start checkout process");
     } finally {
       setIsLoading(false);
     }
