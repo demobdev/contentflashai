@@ -43,6 +43,8 @@ import Link from "next/link";
 import { TikTokMock } from "@/components/social-mocks/TikTokMock";
 import { FacebookMock } from "@/components/social-mocks/FacebookMock";
 import { YouTubeShortsMock } from "@/components/social-mocks/YouTubeShortsMock";
+import { TikTokScriptEditorMock } from "@/components/social-mocks/TikTokScriptEditorMock";
+import { YouTubeScriptEditorMock } from "@/components/social-mocks/YouTubeScriptEditorMock";
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -80,6 +82,7 @@ export default function GenerateContent() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [selectedHistoryItem, setSelectedHistoryItem] =
     useState<HistoryItem | null>(null);
+  const [facebookImage, setFacebookImage] = useState<File | null>(null);
 
   useEffect(() => {
     if (!apiKey) {
@@ -229,6 +232,18 @@ export default function GenerateContent() {
     navigator.clipboard.writeText(text);
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setImage(event.target.files[0]);
+    }
+  };
+
+  const handleFacebookImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setFacebookImage(event.target.files[0]);
+    }
+  };
+
   const renderContentMock = () => {
     if (generatedContent.length === 0) return null;
 
@@ -240,11 +255,11 @@ export default function GenerateContent() {
       case "linkedin":
         return <LinkedInMock content={generatedContent[0]} />;
       case "tiktok":
-        return <TikTokMock content={generatedContent[0]} />;
+        return <TikTokScriptEditorMock content={generatedContent[0]} />;
       case "youtube_shorts":
-        return <YouTubeShortsMock content={generatedContent[0]} />;
+        return <YouTubeScriptEditorMock content={generatedContent[0]} />;
       case "facebook":
-        return <FacebookMock content={generatedContent[0]} />;
+        return <FacebookMock content={generatedContent[0]} image={facebookImage} />;
       default:
         return null;
     }
@@ -278,12 +293,6 @@ export default function GenerateContent() {
     );
   }
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setImage(event.target.files[0]);
-    }
-  };
-
   return (
     <div className="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
       <Navbar />
@@ -312,8 +321,22 @@ export default function GenerateContent() {
                     {item.contentType === "linkedin" && (
                       <Linkedin className="mr-2 h-5 w-5 text-blue-600" />
                     )}
+                    {item.contentType === "tiktok" && (
+                      <MessageSquare className="mr-2 h-5 w-5 text-red-400" />
+                    )}
+                    {item.contentType === "youtube_shorts" && (
+                      <Video className="mr-2 h-5 w-5 text-red-600" />
+                    )}
+                    {item.contentType === "facebook" && (
+                      <Share2 className="mr-2 h-5 w-5 text-blue-500" />
+                    )}
                     <span className="text-sm font-medium">
-                      {item.contentType}
+                      {item.contentType === "twitter" && "Twitter Thread"}
+                      {item.contentType === "instagram" && "Instagram Caption"}
+                      {item.contentType === "linkedin" && "LinkedIn Post"}
+                      {item.contentType === "tiktok" && "TikTok Script"}
+                      {item.contentType === "youtube_shorts" && "YouTube Shorts"}
+                      {item.contentType === "facebook" && "Facebook Post"}
                     </span>
                   </div>
                   <p className="text-sm text-gray-300 truncate">
@@ -404,36 +427,62 @@ export default function GenerateContent() {
                   rows={4}
                   className="w-full bg-gray-700 border-none rounded-xl resize-none"
                 />
-              </div>
-
-              {contentType === "instagram" && (
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-300">
-                    Upload Image
-                  </label>
-                  <div className="flex items-center space-x-3">
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                      id="image-upload"
-                    />
-                    <label
-                      htmlFor="image-upload"
-                      className="cursor-pointer flex items-center justify-center px-4 py-2 bg-gray-700 rounded-xl text-sm font-medium hover:bg-gray-600 transition-colors"
-                    >
-                      <Upload className="mr-2 h-5 w-5" />
-                      <span>Upload Image</span>
-                    </label>
-                    {image && (
-                      <span className="text-sm text-gray-400">
-                        {image.name}
-                      </span>
-                    )}
-                  </div>
+                
+                {/* Image Upload for Instagram and Facebook */}
+                <div className="mt-4 flex flex-wrap gap-4">
+                  {contentType === "instagram" && (
+                    <div className="flex items-center">
+                      <Button
+                        type="button"
+                        onClick={() => document.getElementById("instagram-image")?.click()}
+                        variant="outline"
+                        className="flex items-center space-x-2 text-gray-300 border-gray-600"
+                      >
+                        <Camera className="h-4 w-4" />
+                        <span>Upload Image for Instagram</span>
+                      </Button>
+                      <Input
+                        id="instagram-image"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                      {image && (
+                        <span className="ml-2 text-xs text-gray-400">
+                          {image.name}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  
+                  {contentType === "facebook" && (
+                    <div className="flex items-center">
+                      <Button
+                        type="button"
+                        onClick={() => document.getElementById("facebook-image")?.click()}
+                        variant="outline"
+                        className="flex items-center space-x-2 text-gray-300 border-gray-600"
+                      >
+                        <Share2 className="h-4 w-4" />
+                        <span>Upload Image for Facebook</span>
+                      </Button>
+                      <Input
+                        id="facebook-image"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFacebookImageUpload}
+                        className="hidden"
+                      />
+                      {facebookImage && (
+                        <span className="ml-2 text-xs text-gray-400">
+                          {facebookImage.name}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
 
               <Button
                 onClick={handleGenerate}
@@ -496,6 +545,14 @@ export default function GenerateContent() {
                         ? selectedHistoryItem.content
                         : generatedContent[0]}
                     </ReactMarkdown>
+                    <div className="flex justify-end mt-2">
+                      <Button
+                        onClick={() => copyToClipboard(selectedHistoryItem ? selectedHistoryItem.content : generatedContent[0])}
+                        className="bg-gray-600 hover:bg-gray-500 text-white rounded-full p-2 transition-colors"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>

@@ -1,8 +1,9 @@
 interface FacebookMockProps {
   content: string;
+  image?: File | null;
 }
 
-export const FacebookMock = ({ content }: FacebookMockProps) => {
+export const FacebookMock = ({ content, image }: FacebookMockProps) => {
   // Format date like "February 24 at 2:30 PM"
   const date = new Date();
   const formattedDate = date.toLocaleDateString('en-US', {
@@ -13,6 +14,9 @@ export const FacebookMock = ({ content }: FacebookMockProps) => {
     minute: 'numeric',
     hour12: true,
   });
+
+  // Generate image preview URL if image is provided
+  const imageUrl = image ? URL.createObjectURL(image) : null;
 
   return (
     <div className="bg-white rounded-lg overflow-hidden border border-gray-300 max-w-xl mx-auto">
@@ -36,10 +40,21 @@ export const FacebookMock = ({ content }: FacebookMockProps) => {
         </div>
       </div>
       
-      {/* Image Placeholder */}
-      <div className="bg-gray-200 h-56 w-full flex items-center justify-center">
-        <p className="text-gray-500">Image Preview</p>
-      </div>
+      {/* Image */}
+      {imageUrl ? (
+        <div className="w-full">
+          <img 
+            src={imageUrl} 
+            alt="Post image" 
+            className="w-full object-cover max-h-96" 
+            onLoad={() => URL.revokeObjectURL(imageUrl)}
+          />
+        </div>
+      ) : (
+        <div className="bg-gray-200 h-56 w-full flex items-center justify-center">
+          <p className="text-gray-500">Image Preview</p>
+        </div>
+      )}
       
       {/* Engagement Stats */}
       <div className="p-3 border-t border-gray-300">
