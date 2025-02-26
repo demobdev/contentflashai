@@ -34,16 +34,10 @@ export function Navbar() {
             {isSignedIn && (
               <>
                 <Link
-                  href="/dashboard"
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  Dashboard
-                </Link>
-                <Link
                   href="/generate"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  Generate
+                  Dashboard
                 </Link>
               </>
             )}
