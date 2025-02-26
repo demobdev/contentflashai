@@ -15,10 +15,13 @@ import {
   Upload,
   Copy,
   Twitter,
-  Instagram,
   Linkedin,
   Clock,
   Zap,
+  MessageSquare,
+  Camera,
+  Video,
+  Share2,
 } from "lucide-react";
 import { GoogleGenerativeAI, Part } from "@google/generative-ai";
 import ReactMarkdown from "react-markdown";
@@ -31,11 +34,15 @@ import {
   updateUserPoints,
   getGeneratedContentHistory,
   createOrUpdateUser,
+  getPromptTemplate,
 } from "@/utils/db/actions";
 import { TwitterMock } from "@/components/social-mocks/TwitterMock";
 import { InstagramMock } from "@/components/social-mocks/InstagramMock";
 import { LinkedInMock } from "@/components/social-mocks/LinkedInMock";
 import Link from "next/link";
+import { TikTokMock } from "@/components/social-mocks/TikTokMock";
+import { FacebookMock } from "@/components/social-mocks/FacebookMock";
+import { YouTubeShortsMock } from "@/components/social-mocks/YouTubeShortsMock";
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -44,6 +51,9 @@ const contentTypes = [
   { value: "twitter", label: "Twitter Thread" },
   { value: "instagram", label: "Instagram Caption" },
   { value: "linkedin", label: "LinkedIn Post" },
+  { value: "tiktok", label: "TikTok Script" },
+  { value: "youtube_shorts", label: "YouTube Shorts" },
+  { value: "facebook", label: "Facebook Post" },
 ];
 
 const MAX_TWEET_LENGTH = 280;
@@ -130,11 +140,7 @@ export default function GenerateContent() {
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-      let promptText = `Generate ${contentType} content about "${prompt}".`;
-      if (contentType === "twitter") {
-        promptText +=
-          " Provide a thread of 5 tweets, each under 280 characters.";
-      }
+      let promptText = getPromptTemplate(contentType, prompt);
 
       let imagePart: Part | null = null;
       if (contentType === "instagram" && image) {
@@ -233,6 +239,12 @@ export default function GenerateContent() {
         return <InstagramMock content={generatedContent[0]} />;
       case "linkedin":
         return <LinkedInMock content={generatedContent[0]} />;
+      case "tiktok":
+        return <TikTokMock content={generatedContent[0]} />;
+      case "youtube_shorts":
+        return <YouTubeShortsMock content={generatedContent[0]} />;
+      case "facebook":
+        return <FacebookMock content={generatedContent[0]} />;
       default:
         return null;
     }
@@ -295,7 +307,7 @@ export default function GenerateContent() {
                       <Twitter className="mr-2 h-5 w-5 text-blue-400" />
                     )}
                     {item.contentType === "instagram" && (
-                      <Instagram className="mr-2 h-5 w-5 text-pink-400" />
+                      <Camera className="mr-2 h-5 w-5 text-pink-400" />
                     )}
                     {item.contentType === "linkedin" && (
                       <Linkedin className="mr-2 h-5 w-5 text-blue-600" />
@@ -355,10 +367,19 @@ export default function GenerateContent() {
                             <Twitter className="mr-2 h-4 w-4 text-blue-400" />
                           )}
                           {type.value === "instagram" && (
-                            <Instagram className="mr-2 h-4 w-4 text-pink-400" />
+                            <Camera className="mr-2 h-4 w-4 text-pink-400" />
                           )}
                           {type.value === "linkedin" && (
                             <Linkedin className="mr-2 h-4 w-4 text-blue-600" />
+                          )}
+                          {type.value === "tiktok" && (
+                            <MessageSquare className="mr-2 h-4 w-4 text-red-400" />
+                          )}
+                          {type.value === "youtube_shorts" && (
+                            <Video className="mr-2 h-4 w-4 text-red-600" />
+                          )}
+                          {type.value === "facebook" && (
+                            <Share2 className="mr-2 h-4 w-4 text-blue-500" />
                           )}
                           {type.label}
                         </div>

@@ -212,3 +212,46 @@ export async function createOrUpdateUser(
     return null;
   }
 }
+
+export const getPromptTemplate = (type: string, prompt: string) => {
+  switch (type) {
+    case "twitter":
+      return `Create an engaging Twitter thread (5-7 tweets) about: ${prompt}. 
+      Format as a numbered list of tweets. Each tweet should be under 280 characters.
+      Include hashtags where appropriate. Make it conversational and shareable.`;
+    
+    case "instagram":
+      return `Create an engaging Instagram caption about: ${prompt}.
+      Include relevant hashtags at the end. Maximum 2200 characters.
+      Make it visually descriptive and emotionally appealing.`;
+    
+    case "linkedin":
+      return `Create a professional LinkedIn post about: ${prompt}.
+      Focus on industry insights, professional development, or thought leadership.
+      Format with paragraphs and bullet points if appropriate. 1200-1600 characters ideal.`;
+    
+    case "tiktok":
+      return `Create a TikTok script about: ${prompt}.
+      Include [HOOK] at the beginning to grab attention in the first 3 seconds.
+      Then provide [SCRIPT] with clear instructions for a 15-30 second video.
+      Make it trendy, engaging, and include any sound/music suggestions.
+      End with call-to-action. Total length 60-90 seconds when read aloud.`;
+    
+    case "youtube_shorts":
+      return `Create a YouTube Shorts script about: ${prompt}.
+      Structure it with [HOOK], [MAIN CONTENT], and [CALL TO ACTION].
+      Script should be concise for a 30-60 second vertical video.
+      Include visual directions in [brackets] for what to show on screen.
+      Make it engaging and fast-paced.`;
+    
+    case "facebook":
+      return `Create an engaging Facebook post about: ${prompt}.
+      Include an attention-grabbing first line.
+      Add emojis where appropriate for engagement.
+      End with a question or call-to-action to encourage comments.
+      Optimal length 100-250 words.`;
+    
+    default:
+      return `Create content about: ${prompt}`;
+  }
+};
