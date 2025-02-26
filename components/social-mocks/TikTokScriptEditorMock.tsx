@@ -1,4 +1,5 @@
 import { Clock, Film, Music, Mic, PlayCircle, Save } from "lucide-react";
+import { TikTokVoicePreview } from "@/components/TikTokVoicePreview";
 
 interface TikTokScriptEditorMockProps {
   content: string;
@@ -117,6 +118,8 @@ export const TikTokScriptEditorMock = ({ content }: TikTokScriptEditorMockProps)
           <span>0:25</span>
         </div>
       </div>
+      
+      <TikTokVoicePreview content={content} />
     </div>
   );
 }; 
