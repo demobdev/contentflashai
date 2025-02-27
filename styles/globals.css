@@ -1,0 +1,23 @@
+/* Add these to your globals.css if not already present */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile fixes */
+@media (max-width: 640px) {
+  .mobile-content-preview {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    width: calc(100% + 2rem);
+  }
+  
+  .mobile-content-padded {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+} 

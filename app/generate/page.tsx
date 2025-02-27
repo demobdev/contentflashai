@@ -45,6 +45,7 @@ import { FacebookMock } from "@/components/social-mocks/FacebookMock";
 import { YouTubeShortsMock } from "@/components/social-mocks/YouTubeShortsMock";
 import { TikTokScriptEditorMock } from "@/components/social-mocks/TikTokScriptEditorMock";
 import { YouTubeScriptEditorMock } from "@/components/social-mocks/YouTubeScriptEditorMock";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -245,25 +246,57 @@ export default function GenerateContent() {
   };
 
   const renderContentMock = () => {
-    if (generatedContent.length === 0) return null;
+    if (!generatedContent || generatedContent.length === 0) return null;
 
+    const safeContent = Array.isArray(generatedContent) 
+      ? generatedContent[0] 
+      : String(generatedContent);
+    
     switch (contentType) {
       case "twitter":
-        return <TwitterMock content={generatedContent} />;
+        return (
+          <ErrorBoundary>
+            <TwitterMock tweets={generatedContent} />
+          </ErrorBoundary>
+        );
       case "instagram":
-        return <InstagramMock content={generatedContent[0]} />;
+        return (
+          <ErrorBoundary>
+            <InstagramMock content={safeContent} image={image} />
+          </ErrorBoundary>
+        );
       case "linkedin":
-        return <LinkedInMock content={generatedContent[0]} />;
+        return (
+          <ErrorBoundary>
+            <LinkedInMock content={safeContent} />
+          </ErrorBoundary>
+        );
       case "tiktok":
-        return <TikTokScriptEditorMock content={generatedContent[0]} />;
+        return (
+          <ErrorBoundary>
+            <TikTokScriptEditorMock content={safeContent} />
+          </ErrorBoundary>
+        );
       case "youtube_shorts":
-        return <YouTubeScriptEditorMock content={generatedContent[0]} />;
+        return (
+          <ErrorBoundary>
+            <YouTubeScriptEditorMock content={safeContent} />
+          </ErrorBoundary>
+        );
       case "facebook":
-        return <FacebookMock content={generatedContent[0]} image={facebookImage} />;
+        return (
+          <ErrorBoundary>
+            <FacebookMock content={safeContent} image={facebookImage} />
+          </ErrorBoundary>
+        );
       default:
         return null;
     }
   };
+
+  useEffect(() => {
+    console.log("Generated content updated:", generatedContent);
+  }, [generatedContent]);
 
   if (!isLoaded) {
     return <div>Loading...</div>;
@@ -560,11 +593,13 @@ export default function GenerateContent() {
 
             {/* Content preview */}
             {generatedContent.length > 0 && (
-              <div className="bg-gray-800 p-6 rounded-2xl">
-                <h2 className="text-2xl font-semibold mb-4 text-blue-400">
+              <div className="bg-gray-800 p-4 sm:p-6 rounded-2xl overflow-hidden">
+                <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-blue-400">
                   Preview
                 </h2>
-                {renderContentMock()}
+                <div className="max-w-full overflow-x-auto">
+                  {renderContentMock()}
+                </div>
               </div>
             )}
           </div>

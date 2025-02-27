@@ -422,17 +422,17 @@ export default function Home() {
               { 
                 title: "Direct Social Posting", 
                 desc: "Post directly to your social media accounts from our platform.",
-                tag: "Coming Q3 2023"
+                tag: "Coming Q3 2025"
               },
               { 
                 title: "AI Voice-Over for Videos", 
                 desc: "Convert your scripts to professional voice-overs for TikTok and YouTube.",
-                tag: "Coming Q3 2023"
+                tag: "Coming Q3 2025"
               },
               { 
                 title: "Advanced Analytics", 
                 desc: "Track performance and get insights about your generated content.",
-                tag: "Coming Q4 2023"
+                tag: "Coming Q4 2025"
               },
             ].map((feature, index) => (
               <motion.div

@@ -1,4 +1,6 @@
 import { Clock, Film, Music, Mic, PlayCircle, Save, Video } from "lucide-react";
+import Volume2 from 'lucide-react/dist/esm/icons/volume-2';
+import { YouTubeVoicePreview } from "@/components/YouTubeVoicePreview";
 
 interface YouTubeScriptEditorMockProps {
   content: string;
@@ -64,9 +66,7 @@ export const YouTubeScriptEditorMock = ({ content }: YouTubeScriptEditorMockProp
           <span className="text-white font-medium">YouTube Shorts Script Editor</span>
         </div>
         <div className="flex space-x-2">
-          <Music className="h-4 w-4 text-gray-400" />
-          <Mic className="h-4 w-4 text-gray-400" />
-          <Save className="h-4 w-4 text-gray-400" />
+          <Volume2 className="h-4 w-4 text-gray-400" />
         </div>
       </div>
       
@@ -96,27 +96,32 @@ export const YouTubeScriptEditorMock = ({ content }: YouTubeScriptEditorMockProp
       </div>
       
       {/* Timeline Markers */}
-      <div className="bg-gray-800 p-2 flex text-xs text-gray-500 border-t border-gray-700">
-        <div className="w-1/6 border-r border-gray-700 relative">
-          <div className="absolute top-0 right-0 h-full w-1 bg-red-500"></div>
-          <span>0:00</span>
-        </div>
-        <div className="w-1/6 border-r border-gray-700 relative pl-1">
-          <span>0:10</span>
-        </div>
-        <div className="w-1/6 border-r border-gray-700 relative pl-1">
-          <span>0:20</span>
-        </div>
-        <div className="w-1/6 border-r border-gray-700 relative pl-1">
-          <span>0:30</span>
-        </div>
-        <div className="w-1/6 border-r border-gray-700 relative pl-1">
-          <span>0:40</span>
-        </div>
-        <div className="w-1/6 relative pl-1">
-          <span>0:50</span>
+      <div className="bg-gray-800 p-2 overflow-x-auto hide-scrollbar border-t border-gray-700">
+        <div className="flex text-xs text-gray-500 min-w-[400px]">
+          <div className="w-1/6 border-r border-gray-700 relative">
+            <div className="absolute top-0 right-0 h-full w-1 bg-red-500"></div>
+            <span>0:00</span>
+          </div>
+          <div className="w-1/6 border-r border-gray-700 relative pl-1">
+            <span>0:10</span>
+          </div>
+          <div className="w-1/6 border-r border-gray-700 relative pl-1">
+            <span>0:20</span>
+          </div>
+          <div className="w-1/6 border-r border-gray-700 relative pl-1">
+            <span>0:30</span>
+          </div>
+          <div className="w-1/6 border-r border-gray-700 relative pl-1">
+            <span>0:40</span>
+          </div>
+          <div className="w-1/6 relative pl-1">
+            <span>0:50</span>
+          </div>
         </div>
       </div>
+      
+      {/* Add the YouTube Voice Preview component */}
+      <YouTubeVoicePreview content={content} />
     </div>
   );
 }; 

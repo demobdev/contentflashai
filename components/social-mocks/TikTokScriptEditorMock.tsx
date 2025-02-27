@@ -97,25 +97,27 @@ export const TikTokScriptEditorMock = ({ content }: TikTokScriptEditorMockProps)
       </div>
       
       {/* Timeline Markers */}
-      <div className="bg-gray-800 p-2 flex text-xs text-gray-500 border-t border-gray-700">
-        <div className="w-1/6 border-r border-gray-700 relative">
-          <div className="absolute top-0 right-0 h-full w-1 bg-red-500"></div>
-          <span>0:00</span>
-        </div>
-        <div className="w-1/6 border-r border-gray-700 relative pl-1">
-          <span>0:05</span>
-        </div>
-        <div className="w-1/6 border-r border-gray-700 relative pl-1">
-          <span>0:10</span>
-        </div>
-        <div className="w-1/6 border-r border-gray-700 relative pl-1">
-          <span>0:15</span>
-        </div>
-        <div className="w-1/6 border-r border-gray-700 relative pl-1">
-          <span>0:20</span>
-        </div>
-        <div className="w-1/6 relative pl-1">
-          <span>0:25</span>
+      <div className="bg-gray-800 p-2 overflow-x-auto hide-scrollbar border-t border-gray-700">
+        <div className="flex text-xs text-gray-500 min-w-[400px]">
+          <div className="w-1/6 border-r border-gray-700 relative">
+            <div className="absolute top-0 right-0 h-full w-1 bg-red-500"></div>
+            <span>0:00</span>
+          </div>
+          <div className="w-1/6 border-r border-gray-700 relative pl-1">
+            <span>0:05</span>
+          </div>
+          <div className="w-1/6 border-r border-gray-700 relative pl-1">
+            <span>0:10</span>
+          </div>
+          <div className="w-1/6 border-r border-gray-700 relative pl-1">
+            <span>0:15</span>
+          </div>
+          <div className="w-1/6 border-r border-gray-700 relative pl-1">
+            <span>0:20</span>
+          </div>
+          <div className="w-1/6 relative pl-1">
+            <span>0:25</span>
+          </div>
         </div>
       </div>
       

@@ -1,17 +1,19 @@
 "use client";
 import { useState, useEffect } from 'react';
+// Fix the imports to avoid barrel optimization issues
 import { Button } from '@/components/ui/button';
+// Import icons individually instead of using barrel imports
 import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle';
 import Pause from 'lucide-react/dist/esm/icons/pause';
 import Volume2 from 'lucide-react/dist/esm/icons/volume-2';
 
-interface TikTokVoicePreviewProps {
+interface YouTubeVoicePreviewProps {
   content: string;
 }
 
-export function TikTokVoicePreview({ content }: TikTokVoicePreviewProps) {
+export function YouTubeVoicePreview({ content }: YouTubeVoicePreviewProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedVoice, setSelectedVoice] = useState("en-US-female");
+  const [selectedVoice, setSelectedVoice] = useState("en-US-male");
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [utterance, setUtterance] = useState<SpeechSynthesisUtterance | null>(null);
   const [supported, setSupported] = useState(true);
@@ -33,7 +35,6 @@ export function TikTokVoicePreview({ content }: TikTokVoicePreviewProps) {
             const availableVoices = window.speechSynthesis.getVoices();
             if (availableVoices && availableVoices.length > 0) {
               setVoices(availableVoices);
-              console.log("Loaded voices:", availableVoices.length);
             }
           } catch (err) {
             console.error("Error loading voices:", err);
@@ -81,7 +82,7 @@ export function TikTokVoicePreview({ content }: TikTokVoicePreviewProps) {
 
       // Clean the content - remove any markdown or special formatting
       const cleanedContent = content
-        .replace(/\[HOOK\]|\[SCRIPT\]|\[CALL TO ACTION\]/g, '')
+        .replace(/\[HOOK\]|\[MAIN CONTENT\]|\[CALL TO ACTION\]/g, '')
         .replace(/\[.*?\]/g, '')
         .trim();
 
@@ -129,7 +130,7 @@ export function TikTokVoicePreview({ content }: TikTokVoicePreviewProps) {
 
   return (
     <div className="bg-gray-800 p-4 rounded-lg mt-4">
-      <h3 className="text-white font-medium mb-3">Voice Preview</h3>
+      <h3 className="text-white font-medium mb-3">YouTube Voice Preview</h3>
       
       {error && (
         <div className="mb-3 p-2 bg-red-900/30 border border-red-700 rounded text-red-300 text-sm flex items-center">
@@ -140,7 +141,7 @@ export function TikTokVoicePreview({ content }: TikTokVoicePreviewProps) {
       
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1">
-          <label className="text-xs text-gray-400 mb-1 block">Select Voice:</label>
+          <label className="text-xs text-gray-400 mb-1 block">Select Voice Style:</label>
           <select 
             value={selectedVoice} 
             onChange={(e) => {
@@ -167,7 +168,7 @@ export function TikTokVoicePreview({ content }: TikTokVoicePreviewProps) {
               setError(null); // Clear any previous errors
               playTextToSpeech();
             }}
-            className={`${isPlaying ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'} text-white px-4 py-2`}
+            className={`${isPlaying ? 'bg-red-600 hover:bg-red-700' : 'bg-red-600 hover:bg-red-700'} text-white px-4 py-2`}
           >
             {isPlaying ? (
               <>
@@ -185,7 +186,7 @@ export function TikTokVoicePreview({ content }: TikTokVoicePreviewProps) {
       </div>
       
       <div className="mt-3 text-xs text-gray-400">
-        Voice preview uses your browser's speech synthesis capabilities. Voice quality may vary by browser.
+        Voice preview lets you hear how your script sounds when read aloud.
       </div>
     </div>
   );
