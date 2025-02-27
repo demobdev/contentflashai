@@ -15,17 +15,27 @@ import {
   Share2, 
   ArrowRight, 
   Check, 
-  Star 
+  Star,
+  Camera
 } from "lucide-react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import CountUp from 'react-countup';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { getGeneratedContentHistory } from "@/utils/db/actions";
+import { formatDistance } from "date-fns";
 
 export default function Home() {
-  const { isLoaded, isSignedIn } = useUser();
+  const { isLoaded, isSignedIn, user } = useUser();
   const [scrolled, setScrolled] = useState(false);
+  const [recentContent, setRecentContent] = useState<{
+    id: number;
+    content: string;
+    prompt: string;
+    contentType: string;
+    createdAt: Date;
+  }[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,6 +49,21 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    async function fetchRecentContent() {
+      if (isSignedIn && user?.id) {
+        try {
+          const history = await getGeneratedContentHistory(user.id);
+          setRecentContent(history.slice(0, 3)); // Get only the 3 most recent items
+        } catch (error) {
+          console.error("Error fetching recent content:", error);
+        }
+      }
+    }
+    
+    fetchRecentContent();
+  }, [isSignedIn, user]);
 
   const platformList = [
     { name: "Twitter Threads", icon: Twitter, color: "text-blue-400", bg: "bg-blue-400/10", available: true },
@@ -76,6 +101,14 @@ export default function Home() {
     { value: 15000, label: "Posts Generated", suffix: "+" },
     { value: 40, label: "Engagement Increase", suffix: "%" },
   ];
+
+  const getTimeAgo = (date: Date): string => {
+    return new Date(date).toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
@@ -453,6 +486,43 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {isSignedIn && recentContent && recentContent.length > 0 && (
+        <section className="py-12 bg-gradient-to-b from-black to-gray-900">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl font-bold mb-6 text-blue-400">Your Recent Content</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {recentContent.map((item) => (
+                <div key={item.id} className="bg-gray-800 rounded-xl p-5 border border-gray-700 hover:border-blue-500 transition-colors group">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center">
+                      {item.contentType === 'twitter' && <Twitter className="h-5 w-5 text-blue-400" />}
+                      {item.contentType === 'instagram' && <Camera className="h-5 w-5 text-pink-400" />}
+                      {item.contentType === 'linkedin' && <Linkedin className="h-5 w-5 text-blue-600" />}
+                      {item.contentType === 'tiktok' && <Video className="h-5 w-5 text-teal-400" />}
+                      {item.contentType === 'youtube_shorts' && <Video className="h-5 w-5 text-red-500" />}
+                      {item.contentType === 'facebook' && <MessageSquare className="h-5 w-5 text-blue-500" />}
+                      <h3 className="text-lg font-medium ml-2 capitalize">{item.contentType.replace('_', ' ')}</h3>
+                    </div>
+                    <span className="text-xs text-gray-500">
+                      {getTimeAgo(new Date(item.createdAt))}
+                    </span>
+                  </div>
+                  <p className="text-gray-300 text-sm mb-3 line-clamp-2">{item.prompt}</p>
+                  <Link href="/generate" className="text-blue-400 text-sm group-hover:text-blue-300 transition-colors inline-flex items-center">
+                    View Content <ArrowRight className="ml-1 h-3 w-3" />
+                  </Link>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+              <Link href="/generate" className="inline-flex items-center text-blue-500 hover:text-blue-400 transition-colors">
+                Generate new content <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       <Footer />
     </div>

@@ -80,3 +80,53 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.blog-content h2 {
+  @apply text-2xl font-bold mt-10 mb-4 text-blue-400;
+}
+
+.blog-content h3 {
+  @apply text-xl font-semibold mt-8 mb-3 text-blue-300;
+}
+
+.blog-content p {
+  @apply mb-6 leading-relaxed text-gray-300;
+}
+
+.blog-content ul, .blog-content ol {
+  @apply mb-6 pl-6;
+}
+
+.blog-content li {
+  @apply mb-2;
+}
+
+.blog-content blockquote {
+  @apply border-l-4 border-blue-500 pl-4 py-2 my-6 bg-blue-900/20 rounded-r-md;
+}
+
+.blog-content blockquote p {
+  @apply italic text-blue-200 mb-0;
+}
+
+.blog-content figure {
+  @apply my-8;
+}
+
+.blog-content figcaption {
+  @apply text-sm text-center text-gray-400 mt-2;
+}
+
+.blog-content img {
+  @apply rounded-lg mx-auto w-full max-w-3xl object-cover;
+}
+
+@media (max-width: 768px) {
+  .blog-content h2 {
+    @apply text-xl;
+  }
+  
+  .blog-content h3 {
+    @apply text-lg;
+  }
+}

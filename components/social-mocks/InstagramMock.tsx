@@ -3,9 +3,10 @@ import { Heart, MessageCircle, Send, Bookmark } from "lucide-react";
 
 interface InstagramMockProps {
   content: string;
+  image?: File | null;
 }
 
-export const InstagramMock: React.FC<InstagramMockProps> = ({ content }) => {
+export const InstagramMock = ({ content, image }: InstagramMockProps) => {
   return (
     <div className="bg-white text-black rounded-lg p-4 max-w-md mx-auto">
       <div className="flex items-center mb-3">

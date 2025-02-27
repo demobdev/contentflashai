@@ -46,6 +46,8 @@ import { YouTubeShortsMock } from "@/components/social-mocks/YouTubeShortsMock";
 import { TikTokScriptEditorMock } from "@/components/social-mocks/TikTokScriptEditorMock";
 import { YouTubeScriptEditorMock } from "@/components/social-mocks/YouTubeScriptEditorMock";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { toast } from "react-hot-toast";
+import { ContentSkeleton } from "@/components/ContentSkeleton";
 
 const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
@@ -69,6 +71,69 @@ interface HistoryItem {
   content: string;
   createdAt: Date;
 }
+
+const contentTemplates = {
+  twitter: [
+    { 
+      name: "Thread Starter", 
+      template: "Create a Twitter thread about [topic] that explains why [pain point] is a problem and how [solution] can help. Include data and examples." 
+    },
+    { 
+      name: "Viral Hook", 
+      template: "Write a Twitter thread that starts with a shocking statistic about [industry] and then provides 5 insights that most people don't know." 
+    }
+  ],
+  instagram: [
+    { 
+      name: "Carousel Post", 
+      template: "Create an Instagram caption for a carousel post about [topic]. Include a strong hook, 3-5 value points, and a clear call to action." 
+    },
+    { 
+      name: "Behind-the-Scenes", 
+      template: "Write an authentic behind-the-scenes Instagram caption about [process/product] that shows personality and connects with followers." 
+    }
+  ],
+  linkedin: [
+    { 
+      name: "Thought Leadership", 
+      template: "Write a LinkedIn post sharing my perspective on [industry trend]. Include a personal story, what I've observed, and advice for professionals." 
+    },
+    { 
+      name: "Success Story", 
+      template: "Create a LinkedIn post about how I helped a client/customer achieve [specific result] by using [approach/product]. Include specific metrics and learnings." 
+    }
+  ],
+  tiktok: [
+    { 
+      name: "Hook-Based Script", 
+      template: "Write a TikTok script that starts with an attention-grabbing hook about [surprising fact], then explains [concept] in simple terms, and ends with a call to follow for more tips." 
+    },
+    { 
+      name: "Tutorial Format", 
+      template: "Create a step-by-step TikTok script teaching viewers how to [process]. Start with why this matters, then outline 3 simple steps, and end with a valuable tip." 
+    }
+  ],
+  youtube_shorts: [
+    { 
+      name: "Quick Insight", 
+      template: "Create a YouTube Shorts script that reveals a little-known fact about [topic], explains why it matters, and offers a unique perspective that will make viewers think differently." 
+    },
+    { 
+      name: "Problem-Solution", 
+      template: "Write a YouTube Shorts script identifying a common problem with [topic], why traditional advice fails, and then revealing a better approach that viewers can implement immediately." 
+    }
+  ],
+  facebook: [
+    { 
+      name: "Engaging Question", 
+      template: "Write a Facebook post that starts with a thought-provoking question about [topic], shares my perspective, and invites followers to share their thoughts in the comments." 
+    },
+    { 
+      name: "Value-Driven", 
+      template: "Create a Facebook post offering 3 valuable tips about [topic] that my audience can implement today. End with a question that encourages comments." 
+    }
+  ]
+};
 
 export default function GenerateContent() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -229,8 +294,12 @@ export default function GenerateContent() {
     );
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+  const copyAllContent = () => {
+    const textToCopy = Array.isArray(generatedContent) 
+      ? generatedContent.join('\n\n') 
+      : typeof generatedContent === 'string' ? generatedContent : '';
+    navigator.clipboard.writeText(textToCopy);
+    toast.success("All content copied to clipboard!");
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -297,6 +366,37 @@ export default function GenerateContent() {
   useEffect(() => {
     console.log("Generated content updated:", generatedContent);
   }, [generatedContent]);
+
+  const shareContent = async () => {
+    if (navigator.share) {
+      try {
+        const textToShare = Array.isArray(generatedContent) 
+          ? generatedContent.join('\n\n') 
+          : typeof generatedContent === 'string' ? generatedContent : '';
+          
+        await navigator.share({
+          title: `Content generated with ContentFlash`,
+          text: textToShare,
+          url: 'https://contentflash.ai'
+        });
+        
+        toast.success("Content shared successfully!");
+      } catch (error) {
+        console.log('Error sharing:', error);
+        // User likely canceled the share operation
+        if (error instanceof Error && error.name !== 'AbortError') {
+          toast.error("Could not share content");
+        }
+      }
+    } else {
+      // Fallback for browsers that don't support the Web Share API
+      copyAllContent();
+      toast("Content copied to clipboard - ready to share!", { 
+        icon: '📋',
+        duration: 3000
+      });
+    }
+  };
 
   if (!isLoaded) {
     return <div>Loading...</div>;
@@ -461,60 +561,76 @@ export default function GenerateContent() {
                   className="w-full bg-gray-700 border-none rounded-xl resize-none"
                 />
                 
-                {/* Image Upload for Instagram and Facebook */}
-                <div className="mt-4 flex flex-wrap gap-4">
-                  {contentType === "instagram" && (
-                    <div className="flex items-center">
-                      <Button
+                <div className="mt-2">
+                  <p className="text-xs text-gray-400 mb-1">Quick Templates (click to use):</p>
+                  <div className="flex flex-wrap gap-2">
+                    {contentType && contentTemplates[contentType as keyof typeof contentTemplates]?.map((template, index) => (
+                      <button
+                        key={index}
                         type="button"
-                        onClick={() => document.getElementById("instagram-image")?.click()}
-                        variant="outline"
-                        className="flex items-center space-x-2 text-gray-300 border-gray-600"
+                        className="text-xs bg-gray-700 text-gray-200 hover:bg-gray-600 px-3 py-1 rounded-md border border-gray-600 transition-colors"
+                        onClick={() => setPrompt(template.template)}
                       >
-                        <Camera className="h-4 w-4" />
-                        <span>Upload Image for Instagram</span>
-                      </Button>
-                      <Input
-                        id="instagram-image"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                      {image && (
-                        <span className="ml-2 text-xs text-gray-400">
-                          {image.name}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  
-                  {contentType === "facebook" && (
-                    <div className="flex items-center">
-                      <Button
-                        type="button"
-                        onClick={() => document.getElementById("facebook-image")?.click()}
-                        variant="outline"
-                        className="flex items-center space-x-2 text-gray-300 border-gray-600"
-                      >
-                        <Share2 className="h-4 w-4" />
-                        <span>Upload Image for Facebook</span>
-                      </Button>
-                      <Input
-                        id="facebook-image"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFacebookImageUpload}
-                        className="hidden"
-                      />
-                      {facebookImage && (
-                        <span className="ml-2 text-xs text-gray-400">
-                          {facebookImage.name}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                        {template.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
+              </div>
+
+              {/* Image Upload for Instagram and Facebook */}
+              <div className="mt-4 flex flex-wrap gap-4">
+                {contentType === "instagram" && (
+                  <div className="flex items-center">
+                    <Button
+                      type="button"
+                      onClick={() => document.getElementById("instagram-image")?.click()}
+                      variant="outline"
+                      className="flex items-center space-x-2 text-gray-300 border-gray-600"
+                    >
+                      <Camera className="h-4 w-4" />
+                      <span>Upload Image for Instagram</span>
+                    </Button>
+                    <Input
+                      id="instagram-image"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                    {image && (
+                      <span className="ml-2 text-xs text-gray-400">
+                        {image.name}
+                      </span>
+                    )}
+                  </div>
+                )}
+                
+                {contentType === "facebook" && (
+                  <div className="flex items-center">
+                    <Button
+                      type="button"
+                      onClick={() => document.getElementById("facebook-image")?.click()}
+                      variant="outline"
+                      className="flex items-center space-x-2 text-gray-300 border-gray-600"
+                    >
+                      <Share2 className="h-4 w-4" />
+                      <span>Upload Image for Facebook</span>
+                    </Button>
+                    <Input
+                      id="facebook-image"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFacebookImageUpload}
+                      className="hidden"
+                    />
+                    {facebookImage && (
+                      <span className="ml-2 text-xs text-gray-400">
+                        {facebookImage.name}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
 
               <Button
@@ -539,11 +655,21 @@ export default function GenerateContent() {
             </div>
 
             {/* Generated content display */}
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold text-blue-400">
+                {selectedHistoryItem ? "History Item" : "Generated Content"}
+              </h2>
+              {(selectedHistoryItem || generatedContent.length > 0) && (
+                <Button
+                  onClick={copyAllContent}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm flex items-center"
+                >
+                  <Copy className="h-4 w-4 mr-2" /> Copy All
+                </Button>
+              )}
+            </div>
             {(selectedHistoryItem || generatedContent.length > 0) && (
               <div className="bg-gray-800 p-6 rounded-2xl space-y-4">
-                <h2 className="text-2xl font-semibold text-blue-400">
-                  {selectedHistoryItem ? "History Item" : "Generated Content"}
-                </h2>
                 {contentType === "twitter" ? (
                   <div className="space-y-4">
                     {(selectedHistoryItem
@@ -562,7 +688,7 @@ export default function GenerateContent() {
                             {tweet.length}/{MAX_TWEET_LENGTH}
                           </span>
                           <Button
-                            onClick={() => copyToClipboard(tweet)}
+                            onClick={() => copyAllContent()}
                             className="bg-gray-600 hover:bg-gray-500 text-white rounded-full p-2 transition-colors"
                           >
                             <Copy className="h-4 w-4" />
@@ -580,7 +706,7 @@ export default function GenerateContent() {
                     </ReactMarkdown>
                     <div className="flex justify-end mt-2">
                       <Button
-                        onClick={() => copyToClipboard(selectedHistoryItem ? selectedHistoryItem.content : generatedContent[0])}
+                        onClick={() => copyAllContent()}
                         className="bg-gray-600 hover:bg-gray-500 text-white rounded-full p-2 transition-colors"
                       >
                         <Copy className="h-4 w-4" />
@@ -600,6 +726,13 @@ export default function GenerateContent() {
                 <div className="max-w-full overflow-x-auto">
                   {renderContentMock()}
                 </div>
+              </div>
+            )}
+
+            {isLoading && (
+              <div className="space-y-6">
+                <ContentSkeleton />
+                <ContentSkeleton />
               </div>
             )}
           </div>
