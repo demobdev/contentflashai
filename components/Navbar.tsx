@@ -2,9 +2,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
+import { useState } from "react";
 
 export function Navbar() {
   const { isSignedIn } = useUser();
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-gray-800">
@@ -41,12 +43,12 @@ export function Navbar() {
                 </Link>
               </>
             )}
-            <Link 
-              href="/analytics" 
-              className="text-sm font-medium text-white hover:text-blue-400 px-3 py-2 rounded-md"
-            >
-              Analytics
-            </Link>
+            <div className="relative group">
+              <span className="text-sm font-medium text-gray-500 px-3 py-2 rounded-md cursor-not-allowed flex items-center">
+                Analytics
+                <span className="ml-2 text-xs text-gray-400">(Coming Soon)</span>
+              </span>
+            </div>
           </nav>
 
           {/* Auth buttons */}

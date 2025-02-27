@@ -185,13 +185,12 @@ export default function PricingPage() {
                   <span className="text-gray-400">/mo</span>
                 </div>
                 <p className="text-gray-400 mb-6">For larger teams and agencies with advanced content needs.</p>
-                <button
-                  onClick={() => handleSubscribe("price_enterprise")}
-                  disabled={isLoading}
-                  className="block text-center bg-white text-black font-bold py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors w-full disabled:opacity-70"
+                <a
+                  href="mailto:sales@contentflash.ai?subject=ContentFlash%20Enterprise%20Inquiry&body=Hi%20ContentFlash%20team%2C%0A%0AI'm%20interested%20in%20learning%20more%20about%20your%20Enterprise%20plan.%20Please%20contact%20me%20with%20more%20information.%0A%0AThanks!"
+                  className="block text-center bg-white text-black font-bold py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors w-full"
                 >
-                  {isLoading ? "Processing..." : "Contact Sales"}
-                </button>
+                  Contact Sales
+                </a>
               </div>
               <div className="border-t border-gray-700 p-8">
                 <ul className="space-y-4">
