@@ -29,7 +29,7 @@ const blogPosts: BlogPost[] = [
       <p>The content landscape has evolved dramatically with the advent of AI tools. Creating engaging, relevant content at scale is now possible for businesses of all sizes in 2025. With recent advancements in large language models and multimodal AI systems, the possibilities for content creators have expanded exponentially.</p>
       
       <figure>
-        <img src="/images/blog/workflow.jpg" alt="AI Content Verification Workflow" />
+        <img src="/images/blog/ai-workflow-detailed.jpg" alt="AI Content Verification Workflow" />
         <figcaption>A comprehensive AI content verification workflow</figcaption>
       </figure>
       
@@ -80,7 +80,7 @@ const blogPosts: BlogPost[] = [
       <p>Implement rigorous fact-checking processes using tools like <a href="https://www.factchecker.ai" target="_blank" rel="noopener noreferrer">FactChecker.ai</a> to verify claims made by AI systems. This is especially important for technical or regulated industries.</p>
       
       <figure>
-        <img src="/images/blog/workflow.jpg" alt="AI Content Verification Workflow" />
+        <img src="/images/blog/ai-workflow-detailed.jpg" alt="AI Content Verification Workflow" />
         <figcaption>A comprehensive AI content verification workflow</figcaption>
       </figure>
       
@@ -822,8 +822,8 @@ const blogPosts: BlogPost[] = [
       <p>As AI content tools become mainstream, creators face important ethical considerations about transparency, attribution, and authenticity. The choices you make now will define your brand's reputation in the increasingly AI-aware marketplace.</p>
       
       <figure>
-        <img src="/images/blog/blog-5.jpg" alt="AI Ethics Framework" />
-        <figcaption>A framework for ethical AI content creation and distribution</figcaption>
+        <img src="/images/blog/ai-workflow-detailed.jpg" alt="AI Content Verification Workflow" />
+        <figcaption>A comprehensive AI content verification workflow</figcaption>
       </figure>
       
       <h3>Transparency with Audiences</h3>
