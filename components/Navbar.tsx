@@ -41,6 +41,12 @@ export function Navbar() {
                 </Link>
               </>
             )}
+            <Link 
+              href="/analytics" 
+              className="text-sm font-medium text-white hover:text-blue-400 px-3 py-2 rounded-md"
+            >
+              Analytics
+            </Link>
           </nav>
 
           {/* Auth buttons */}

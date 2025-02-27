@@ -125,7 +125,7 @@ export default function PricingPage() {
                 </div>
                 <p className="text-gray-400 mb-6">Perfect for individuals just getting started with AI content creation.</p>
                 <button
-                  onClick={() => handleSubscribe("price_basic")}
+                  onClick={() => handleSubscribe("price_1QdLzPDIZtNhBePNSRZdpCOq")}
                   disabled={isLoading}
                   className="block text-center bg-white text-black font-bold py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors w-full disabled:opacity-70"
                 >
@@ -157,7 +157,7 @@ export default function PricingPage() {
                 </div>
                 <p className="text-gray-300 mb-6">For professionals and small teams creating content regularly.</p>
                 <button
-                  onClick={() => handleSubscribe("price_pro")}
+                  onClick={() => handleSubscribe("price_1QdM0mDIZtNhBePNi15kVpc3")}
                   disabled={isLoading}
                   className="block text-center bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors w-full disabled:opacity-70"
                 >
